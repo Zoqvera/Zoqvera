@@ -1,4 +1,4 @@
-// Google Analytics 4 + carregamento das camadas principal, UX e responsividade da Zoqvera.
+// Google Analytics 4 + carregamento das camadas principal, UX, responsividade e idiomas da Zoqvera.
 (() => {
   const GA_MEASUREMENT_ID = 'G-FGZGQTZDML';
   const currentScript = document.currentScript;
@@ -241,13 +241,19 @@
   responsiveScript.src = new URL('responsive.js', scriptUrl).href;
   responsiveScript.async = false;
 
+  const i18nScript = document.createElement('script');
+  i18nScript.src = new URL('i18n-core.js', scriptUrl).href;
+  i18nScript.async = false;
+
   if (currentScript?.parentNode) {
     currentScript.parentNode.insertBefore(coreScript, currentScript.nextSibling);
     currentScript.parentNode.insertBefore(uxScript, coreScript.nextSibling);
     currentScript.parentNode.insertBefore(responsiveScript, uxScript.nextSibling);
+    currentScript.parentNode.insertBefore(i18nScript, responsiveScript.nextSibling);
   } else {
     document.body.appendChild(coreScript);
     document.body.appendChild(uxScript);
     document.body.appendChild(responsiveScript);
+    document.body.appendChild(i18nScript);
   }
 })();
