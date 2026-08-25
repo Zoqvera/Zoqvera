@@ -3,6 +3,17 @@
   const GA_MEASUREMENT_ID = 'G-FGZGQTZDML';
   const currentScript = document.currentScript;
   const scriptUrl = currentScript?.src || new URL('/script.js', window.location.origin).href;
+  const queryLanguage = new URLSearchParams(window.location.search).get('lang');
+
+  // Um link compartilhado com ?lang=en também define a preferência para as
+  // próximas páginas, mantendo a navegação consistente mesmo sem repetir o parâmetro.
+  if (queryLanguage === 'pt' || queryLanguage === 'en') {
+    try {
+      window.localStorage.setItem('zoqvera-language', queryLanguage);
+    } catch {
+      // O site continua funcionando quando o armazenamento do navegador está indisponível.
+    }
+  }
 
   if (!window.__zoqveraGa4Loaded) {
     window.__zoqveraGa4Loaded = true;
@@ -245,15 +256,21 @@
   i18nScript.src = new URL('i18n-core.js', scriptUrl).href;
   i18nScript.async = false;
 
+  const i18nPatchesScript = document.createElement('script');
+  i18nPatchesScript.src = new URL('i18n-patches.js', scriptUrl).href;
+  i18nPatchesScript.async = false;
+
   if (currentScript?.parentNode) {
     currentScript.parentNode.insertBefore(coreScript, currentScript.nextSibling);
     currentScript.parentNode.insertBefore(uxScript, coreScript.nextSibling);
     currentScript.parentNode.insertBefore(responsiveScript, uxScript.nextSibling);
     currentScript.parentNode.insertBefore(i18nScript, responsiveScript.nextSibling);
+    currentScript.parentNode.insertBefore(i18nPatchesScript, i18nScript.nextSibling);
   } else {
     document.body.appendChild(coreScript);
     document.body.appendChild(uxScript);
     document.body.appendChild(responsiveScript);
     document.body.appendChild(i18nScript);
+    document.body.appendChild(i18nPatchesScript);
   }
 })();
