@@ -1,5 +1,9 @@
 /* Responsive content layer: portfolio cases and Insights. */
 
+html[lang="en"] .whatsapp-float {
+  display: none !important;
+}
+
 .case-page,
 .insights-page {
   overflow-x: clip;
