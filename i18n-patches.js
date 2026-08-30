@@ -43,5 +43,181 @@ window.ZQ_I18N?.register({
   'Precisa transformar uma marca em uma experiência de venda?': 'Need to turn a brand into a sales experience?',
   'A Zoqvera desenvolve sites de vendas, lojas virtuais, landing pages e integrações de pagamento com foco em experiência, conversão e operação.': 'Zoqvera develops sales websites, online stores, landing pages, and payment integrations focused on experience, conversion, and operations.',
   'Ver outros cases': 'View other case studies',
-  'Case Site de Vendas.': 'Sales Website Case Study.'
+  'Case Site de Vendas.': 'Sales Website Case Study.',
+  'Agendar consulta gratuita': 'Book a Free Consultation',
+  'Agende uma conversa gratuita de 30 minutos para discutir seu projeto, objetivos e próximos passos.': 'Book a free 30-minute consultation to discuss your project, goals, and next steps.',
+  'Consulta gratuita de 30 minutos': 'Free 30-minute consultation',
+  'Prefere enviar um briefing?': 'Prefer to send a brief?',
+  'Solicitar orçamento': 'Request a Quote'
 });
+
+(() => {
+  if (window.__zoqveraCalIntegration) return;
+  if (window.ZQ_I18N?.getLanguage?.() !== 'en') return;
+  if (!document.querySelector('.contact-section')) return;
+  window.__zoqveraCalIntegration = true;
+
+  const CAL_LINK = 'zoqvera/free-consultation';
+  const CAL_URL = `https://cal.com/${CAL_LINK}`;
+  const CAL_NAMESPACE = 'free-consultation';
+
+  const addCalAttributes = (element, placement) => {
+    if (!element) return;
+    element.classList.add('zq-cal-trigger');
+    element.setAttribute('href', CAL_URL);
+    element.setAttribute('data-cal-link', CAL_LINK);
+    element.setAttribute('data-cal-namespace', CAL_NAMESPACE);
+    element.setAttribute('data-cal-config', JSON.stringify({
+      layout: 'month_view',
+      utm_source: 'zoqvera.com',
+      utm_medium: 'website',
+      utm_campaign: 'free_consultation',
+      utm_content: placement
+    }));
+    element.removeAttribute('target');
+    element.removeAttribute('rel');
+  };
+
+  const navCta = document.querySelector('.nav-cta');
+  if (navCta) {
+    navCta.textContent = 'Book a Free Consultation';
+    navCta.setAttribute('aria-label', 'Book a Free Consultation');
+    addCalAttributes(navCta, 'header');
+  }
+
+  const heroActions = document.querySelector('.hero-actions');
+  if (heroActions) {
+    const primary = heroActions.querySelector('.button-primary');
+    const secondary = heroActions.querySelector('.text-link');
+
+    if (primary) {
+      primary.innerHTML = 'Book a Free Consultation <span>↗</span>';
+      primary.setAttribute('aria-label', 'Book a Free Consultation');
+      addCalAttributes(primary, 'hero');
+    }
+
+    if (secondary) {
+      secondary.innerHTML = 'View portfolio <span>↓</span>';
+      secondary.setAttribute('href', '#portfolio');
+      secondary.removeAttribute('data-cal-link');
+      secondary.removeAttribute('data-cal-namespace');
+      secondary.removeAttribute('data-cal-config');
+      secondary.classList.remove('zq-cal-trigger');
+    }
+  }
+
+  const contactWrap = document.querySelector('.contact-wrap');
+  const contactCopy = contactWrap?.querySelector('.contact-copy');
+  const contactForm = document.querySelector('#contact-form');
+
+  if (contactCopy) {
+    const title = contactCopy.querySelector('h2');
+    const description = contactCopy.querySelector('p');
+    if (title) title.innerHTML = 'Have a project in mind?<br/><span class="accent-text">Let\'s talk.</span>';
+    if (description) description.textContent = 'Book a free 30-minute consultation to discuss your project, goals, and next steps.';
+  }
+
+  if (contactForm && contactWrap) {
+    contactForm.hidden = true;
+    contactForm.setAttribute('aria-hidden', 'true');
+
+    const bookingPanel = document.createElement('div');
+    bookingPanel.className = 'zq-consultation-panel';
+    bookingPanel.innerHTML = `
+      <span class="zq-consultation-kicker">FREE · 30 MINUTES · GOOGLE MEET</span>
+      <h3>Free 30-minute consultation</h3>
+      <p>Choose a time that works for you. Cal.com automatically displays availability in your local time zone.</p>
+      <a class="button button-primary zq-consultation-button" href="${CAL_URL}" aria-label="Book a Free Consultation">Book a Free Consultation <span>↗</span></a>
+      <a class="zq-quote-link" href="solicitar-orcamento?lang=en">Prefer to send a brief? <strong>Request a Quote →</strong></a>
+    `;
+    contactWrap.appendChild(bookingPanel);
+    addCalAttributes(bookingPanel.querySelector('.zq-consultation-button'), 'contact');
+  }
+
+  const whatsappFloat = document.querySelector('.whatsapp-float');
+  if (whatsappFloat) whatsappFloat.hidden = true;
+
+  if (!document.querySelector('style[data-zq-cal-style]')) {
+    const style = document.createElement('style');
+    style.dataset.zqCalStyle = 'true';
+    style.textContent = `
+      .zq-consultation-panel{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:100%;padding:clamp(28px,4vw,52px);border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);border-radius:4px}
+      .zq-consultation-kicker{display:block;margin-bottom:18px;font:500 11px 'DM Mono',monospace;letter-spacing:.14em;color:#9da9a1}
+      .zq-consultation-panel h3{margin:0 0 14px;font-size:clamp(24px,3vw,38px);line-height:1.04;letter-spacing:-.035em}
+      .zq-consultation-panel p{max-width:560px;margin:0 0 26px;color:#aeb7b1;line-height:1.7}
+      .zq-consultation-button{margin-bottom:18px}
+      .zq-quote-link{font-size:13px;color:inherit;text-decoration:none;opacity:.76}
+      .zq-quote-link:hover{opacity:1}.zq-quote-link strong{font-weight:700}
+      @media(max-width:760px){.zq-consultation-panel{padding:28px 22px}.zq-consultation-button{width:100%;justify-content:center;text-align:center}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Official Cal.com embed bootstrap. Anchors retain their normal href as a
+  // fallback if the embed script is unavailable.
+  ((C, A, L) => {
+    const push = (api, args) => api.q.push(args);
+    const d = C.document;
+    C.Cal = C.Cal || function CalEmbed() {
+      const cal = C.Cal;
+      const args = arguments;
+      if (!cal.loaded) {
+        cal.ns = {};
+        cal.q = cal.q || [];
+        d.head.appendChild(d.createElement('script')).src = A;
+        cal.loaded = true;
+      }
+      if (args[0] === L) {
+        const api = function namespacedCal() { push(api, arguments); };
+        const namespace = args[1];
+        api.q = api.q || [];
+        if (typeof namespace === 'string') {
+          cal.ns[namespace] = cal.ns[namespace] || api;
+          push(cal.ns[namespace], args);
+          push(cal, ['initNamespace', namespace]);
+        } else {
+          push(cal, args);
+        }
+        return;
+      }
+      push(cal, args);
+    };
+  })(window, 'https://app.cal.com/embed/embed.js', 'init');
+
+  window.Cal('init', CAL_NAMESPACE, { origin: 'https://cal.com' });
+  window.Cal.ns[CAL_NAMESPACE]('ui', {
+    hideEventTypeDetails: false,
+    layout: 'month_view',
+    cssVarsPerTheme: {
+      light: { 'cal-brand': '#111814' },
+      dark: { 'cal-brand': '#d8ff64' }
+    }
+  });
+  window.Cal.ns[CAL_NAMESPACE]('preload', { calLink: CAL_LINK });
+  window.Cal.ns[CAL_NAMESPACE]('on', {
+    action: 'bookingSuccessfulV2',
+    callback: (event) => {
+      const data = event?.detail?.data || {};
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'consultation_booked', {
+          event_type_id: data.eventTypeId || undefined,
+          booking_uid: data.uid || undefined,
+          page_path: window.location.pathname
+        });
+      }
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    const trigger = event.target instanceof Element ? event.target.closest('.zq-cal-trigger') : null;
+    if (!trigger || typeof window.gtag !== 'function') return;
+    const placement = trigger.closest('.site-header') ? 'header'
+      : trigger.closest('.hero-actions') ? 'hero'
+      : trigger.closest('.contact-section') ? 'contact'
+      : 'page';
+    window.gtag('event', 'consultation_start', {
+      placement,
+      page_path: window.location.pathname
+    });
+  }, { capture: true });
+})();
