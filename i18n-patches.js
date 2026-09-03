@@ -53,6 +53,8 @@ window.ZQ_I18N?.register({
 
 (() => {
   const CONTACT_EMAIL = 'comercial@zoqvera.com';
+  const language = window.ZQ_I18N?.getLanguage?.() || 'pt';
+  const contactLabel = language === 'en' ? 'Contact us:' : 'Contato:';
   const footerInner = document.querySelector(
     '.footer-bottom, .service-footer-inner, .case-footer-inner, .insights-footer-inner'
   );
@@ -62,8 +64,8 @@ window.ZQ_I18N?.register({
   const emailLink = document.createElement('a');
   emailLink.className = 'zq-footer-email';
   emailLink.href = `mailto:${CONTACT_EMAIL}`;
-  emailLink.textContent = CONTACT_EMAIL;
-  emailLink.setAttribute('aria-label', `Email Zoqvera: ${CONTACT_EMAIL}`);
+  emailLink.textContent = `${contactLabel} ${CONTACT_EMAIL}`;
+  emailLink.setAttribute('aria-label', `${contactLabel} ${CONTACT_EMAIL}`);
 
   if (footerInner.children.length > 1) {
     footerInner.insertBefore(emailLink, footerInner.lastElementChild);
