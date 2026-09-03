@@ -257,7 +257,9 @@
   i18nScript.async = false;
 
   const i18nPatchesScript = document.createElement('script');
-  i18nPatchesScript.src = new URL('i18n-patches.js', scriptUrl).href;
+  const i18nPatchesUrl = new URL('i18n-patches.js', scriptUrl);
+  i18nPatchesUrl.searchParams.set('v', '20260903-footer-contact-v2');
+  i18nPatchesScript.src = i18nPatchesUrl.href;
   i18nPatchesScript.async = false;
 
   if (currentScript?.parentNode) {
