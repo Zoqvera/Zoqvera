@@ -30,7 +30,7 @@ window.ZQ_I18N?.register({
   'Comércio digital com linguagem de marca, não de template.': 'Digital commerce with brand language, not template language.',
   'As decisões de interface priorizam hierarquia, ritmo e consistência para que elementos comerciais permaneçam funcionais sem apagar a personalidade visual do projeto.': 'Interface decisions prioritize hierarchy, rhythm, and consistency so commercial elements remain functional without erasing the project’s visual personality.',
   'O produto aparece cedo na jornada, com preço e caminhos de ação visíveis.': 'The product appears early in the journey, with price and action paths visible.',
-  'O manifesto reforça diferenciação e valor percebido sem bloquear a navegação comercial.': 'The manifesto reinforces differentiation and perceived value without blocking commercial navigation.',
+  'O manifesto reforça diferenciação e valor percebido sem bloquear a navegação comercial.': 'The manifesto reinforces differentiation and perceived value without blocking the commercial navigation.',
   'Busca, seleção de tamanho e carrinho permanecem acessíveis sem deslocar o usuário para uma experiência visual desconectada.': 'Search, size selection, and cart remain accessible without moving the user into a visually disconnected experience.',
   'Responsividade é tratada como parte da jornada de compra, não como simples redução do layout desktop.': 'Responsiveness is treated as part of the shopping journey, not as a simple reduction of the desktop layout.',
   '05 / ENTREGA': '05 / DELIVERY',
@@ -50,6 +50,38 @@ window.ZQ_I18N?.register({
   'Prefere enviar um briefing?': 'Prefer to send a brief?',
   'Solicitar orçamento': 'Request a Quote'
 });
+
+(() => {
+  const CONTACT_EMAIL = 'comercial@zoqvera.com';
+  const footerInner = document.querySelector(
+    '.footer-bottom, .service-footer-inner, .case-footer-inner, .insights-footer-inner'
+  );
+
+  if (!footerInner || footerInner.querySelector('.zq-footer-email')) return;
+
+  const emailLink = document.createElement('a');
+  emailLink.className = 'zq-footer-email';
+  emailLink.href = `mailto:${CONTACT_EMAIL}`;
+  emailLink.textContent = CONTACT_EMAIL;
+  emailLink.setAttribute('aria-label', `Email Zoqvera: ${CONTACT_EMAIL}`);
+
+  if (footerInner.children.length > 1) {
+    footerInner.insertBefore(emailLink, footerInner.lastElementChild);
+  } else {
+    footerInner.appendChild(emailLink);
+  }
+
+  if (!document.querySelector('style[data-zq-footer-contact-style]')) {
+    const style = document.createElement('style');
+    style.dataset.zqFooterContactStyle = 'true';
+    style.textContent = `
+      .zq-footer-email{color:inherit;text-decoration:none;white-space:nowrap;transition:color .2s ease}
+      .zq-footer-email:hover{color:#86ffb7}
+      .zq-footer-email:focus-visible{outline:2px solid #86ffb7;outline-offset:4px;border-radius:2px}
+    `;
+    document.head.appendChild(style);
+  }
+})();
 
 (() => {
   if (window.__zoqveraCalIntegration) return;
